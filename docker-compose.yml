@@ -1,0 +1,22 @@
+# Local infrastructure. PostgreSQL with the pgvector extension is used for
+# retrieval (embeddings) and, later, for LangGraph checkpoints.
+# Redis (queue) will be added in Phase 5.
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: issue_sift
+      POSTGRES_USER: issue_sift
+      POSTGRES_PASSWORD: issue_sift
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U issue_sift -d issue_sift"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
